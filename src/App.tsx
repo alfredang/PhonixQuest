@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Dashboard from './pages/Dashboard';
 import LessonView from './pages/LessonView';
 import GamificationHUD from './components/GamificationHUD';
+import Scaffold from './components/layout/Scaffold';
 import { UserProgress } from './types';
 import { INITIAL_USER_STATE } from './constants';
 
@@ -22,9 +23,9 @@ const App: React.FC = () => {
 
   const handleLessonComplete = (score: number) => {
     setUser(prev => ({
-        ...prev,
-        xp: prev.xp + score,
-        completedLessons: currentLessonId ? [...prev.completedLessons, currentLessonId] : prev.completedLessons
+      ...prev,
+      xp: prev.xp + score,
+      completedLessons: currentLessonId ? [...prev.completedLessons, currentLessonId] : prev.completedLessons
     }));
     setView(View.DASHBOARD);
     setCurrentLessonId(null);
@@ -35,26 +36,29 @@ const App: React.FC = () => {
     setCurrentLessonId(null);
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-      <GamificationHUD user={user} />
-      
-      {view === View.DASHBOARD && (
-        <main className="pt-20">
-             <Dashboard user={user} onLessonSelect={handleLessonSelect} />
-        </main>
-      )}
+  // Determine theme based on level or world
+  const currentTheme = 'sky';
 
-      {view === View.LESSON && currentLessonId && (
-        <div className="fixed inset-0 z-50 bg-white">
-            <LessonView 
-                lessonId={currentLessonId} 
-                onExit={handleExitLesson} 
-                onComplete={handleLessonComplete} 
+  return (
+    <Scaffold theme={currentTheme}>
+      <GamificationHUD user={user} />
+
+      <div className="flex-1 w-full max-w-7xl mx-auto p-4 pt-24">
+        {view === View.DASHBOARD && (
+          <Dashboard user={user} onLessonSelect={handleLessonSelect} />
+        )}
+
+        {view === View.LESSON && currentLessonId && (
+          <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-xl">
+            <LessonView
+              lessonId={currentLessonId}
+              onExit={handleExitLesson}
+              onComplete={handleLessonComplete}
             />
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </Scaffold>
   );
 };
 

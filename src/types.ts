@@ -21,15 +21,39 @@ export interface Phoneme {
   exampleWord: string;
 }
 
+export type GameType = 'tap-sound' | 'pop-phoneme' | 'memory-match' | 'blend-drag' | 'build-word' | 'speed-race';
+
+export interface AssessmentCriteria {
+  accuracyWeight: number;
+  fluencyWeight: number;
+  intonationWeight: number;
+}
+
+export interface LessonContent {
+  listen: {
+    introAudioUrl: string;
+    visualFocus: Phoneme;
+  };
+  practice: {
+    words: string[];
+    drills: { type: 'repetition' | 'discrimination', prompt: string, correct: string, distractors?: string[] }[];
+  };
+  play: {
+    gameType: GameType;
+    config: any; // Flexible config based on game type
+  };
+  assess: {
+    criteria: AssessmentCriteria;
+  };
+}
+
 export interface Lesson {
   id: string;
   title: string;
   level: LevelType;
   description: string;
   phonemes: Phoneme[];
-  words: string[]; // Practice words
-  sentence?: string; // For level 4+
-  story?: string; // For level 5
+  content: LessonContent;
   xpReward: number;
 }
 
